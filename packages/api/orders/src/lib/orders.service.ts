@@ -12,7 +12,7 @@ export class OrdersService {
     return this.ordersRepository.findById(id);
   }
 
-  async createOrder(userId: string, totalCents: number): Promise<Order> {
+  async createOrder(productId:string, userId: string, totalCents: number): Promise<Order> {
     if (totalCents <= 0) {
       throw new Error('Order total must be greater than zero');
     }
@@ -21,6 +21,7 @@ export class OrdersService {
       id: randomUUID(),
       userId,
       totalCents,
+      productId,
       status: 'PENDING',
     };
 

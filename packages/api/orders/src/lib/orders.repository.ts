@@ -38,9 +38,10 @@ export class OrdersRepository {
     const createdOrder = await this.prisma.order.create({
       data: {
         id: order.id,
-        userId: order.userId,
+        productId: order.productId,
         totalCents: order.totalCents,
         status: `${order.status}`,
+        userId: order.userId,
       },
     });
 

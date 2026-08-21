@@ -1,5 +1,4 @@
 import { Router } from 'express';
-
 import {
   OrdersController,
   OrdersService,
@@ -8,7 +7,6 @@ import {
 import { prisma } from './infrastructure/db/prisma';
 
 const router = Router();
-
 const repository = new OrdersRepository(prisma);
 const service = new OrdersService(repository);
 const controller = new OrdersController(service);
