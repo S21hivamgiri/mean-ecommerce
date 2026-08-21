@@ -1,19 +1,49 @@
 import type { Order } from '@myCommerce/models';
+import { PrismaClient } from '@prisma/client';
+import { OrderStatus } from '@myCommerce/models';
 
 export class OrdersRepository {
-  private orders: Order[] = [];
+  constructor(
+    private readonly prisma: PrismaClient
+  ) {}
 
-  findAll(): Order[] {
-    return this.orders;
+  private mapOrder(order: any): Order {
+    return {
+      ...order,
+      status: order.status as OrderStatus,
+    };
   }
 
-  findById(id: string): Order | undefined {
-    return this.orders.find((order) => order.id === id);
+  async findAll(): Promise<Order[]> {
+    const orders = await this.prisma.order.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return orders.map((order) => this.mapOrder(order));
   }
 
-  create(order: Order): Order {
-    this.orders.push(order);
+  async findById(id: string): Promise<Order | undefined> {
+    const order = await this.prisma.order.findUnique({
+      where: {
+        id,
+      },
+    });
 
-    return order;
+    return order ? this.mapOrder(order) : undefined;
+  }
+
+  async create(order: Order): Promise<Order> {
+    const createdOrder = await this.prisma.order.create({
+      data: {
+        id: order.id,
+        userId: order.userId,
+        totalCents: order.totalCents,
+        status: `${order.status}`,
+      },
+    });
+
+    return this.mapOrder(createdOrder);
   }
 }

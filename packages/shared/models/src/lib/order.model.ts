@@ -1,7 +1,7 @@
 export interface Order {
   id: string;
   userId: string;
-  total: number;
+  totalCents: number;
   status: OrderStatus;
 }
 
