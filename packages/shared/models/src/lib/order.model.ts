@@ -5,4 +5,4 @@ export interface Order {
   status: OrderStatus;
 }
 
-export type OrderStatus = 'pending' | 'confirmed' | 'paid' | 'cancelled';
+export type OrderStatus = 'PENDING' | 'CONFIRMED' | 'PAID' | 'CANCELLED';

@@ -5,14 +5,14 @@ import { createOrderSchema } from './orders.types';
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
-  getOrders = (_req: Request, res: Response) => {
-    const orders = this.ordersService.getOrders();
+  getOrders = async (_req: Request, res: Response) => {
+    const orders = await this.ordersService.getOrders();
 
     res.json(orders);
   };
 
-  getOrder = (req: Request, res: Response) => {
-    const order = this.ordersService.getOrder(req.params.id);
+  getOrder = async (req: Request, res: Response) => {
+    const order = await this.ordersService.getOrder(req.params.id);
 
     if (!order) {
       res.status(404).json({
@@ -25,7 +25,7 @@ export class OrdersController {
     res.json(order);
   };
 
-  createOrder = (req: Request, res: Response) => {
+  createOrder = async (req: Request, res: Response) => {
     const result = createOrderSchema.safeParse(req.body);
 
     if (!result.success) {
@@ -39,7 +39,7 @@ export class OrdersController {
 
     const { userId, totalCents } = result.data;
 
-    const order = this.ordersService.createOrder(userId, totalCents);
+    const order = await this.ordersService.createOrder(userId, totalCents);
 
     res.status(201).json(order);
   };

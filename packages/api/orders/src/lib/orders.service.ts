@@ -21,7 +21,7 @@ export class OrdersService {
       id: randomUUID(),
       userId,
       totalCents,
-      status: 'pending',
+      status: 'PENDING',
     };
 
     return this.ordersRepository.create(order);
