@@ -37,9 +37,9 @@ export class OrdersController {
       return;
     }
 
-    const { userId, total } = result.data;
+    const { userId, totalCents } = result.data;
 
-    const order = this.ordersService.createOrder(userId, total);
+    const order = this.ordersService.createOrder(userId, totalCents);
 
     res.status(201).json(order);
   };
