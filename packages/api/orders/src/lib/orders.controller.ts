@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import { OrdersService } from './orders.service';
+import { createOrderSchema } from './orders.types';
 
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
@@ -25,7 +26,18 @@ export class OrdersController {
   };
 
   createOrder = (req: Request, res: Response) => {
-    const { userId, total } = req.body;
+    const result = createOrderSchema.safeParse(req.body);
+
+    if (!result.success) {
+      res.status(400).json({
+        message: 'Invalid request',
+        errors: result.error.flatten(),
+      });
+
+      return;
+    }
+
+    const { userId, total } = result.data;
 
     const order = this.ordersService.createOrder(userId, total);
 
