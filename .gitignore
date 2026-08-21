@@ -54,3 +54,8 @@ test-output
 .nx/migrate-runs
 
 package-lock.json
+/generated/prisma
+.claude
+.agents
+.windsurf
+skills-lock.json
