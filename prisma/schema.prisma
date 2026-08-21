@@ -9,6 +9,7 @@ datasource db {
 model Order {
   id         String   @id @default(uuid())
   userId     String
+  productId  String
   totalCents Int
   status     String
   createdAt  DateTime @default(now())
