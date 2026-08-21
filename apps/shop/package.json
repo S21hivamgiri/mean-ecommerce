@@ -1,0 +1,27 @@
+{
+  "name": "@myCommerce/shop",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "projectType": "application",
+    "tags": ["scope:shop"],
+    "targets": {
+      "serve": {
+        "dependsOn": ["@myCommerce/api:serve"]
+      },
+      "dev": {
+        "dependsOn": ["@myCommerce/api:serve"]
+      },
+      "preview": {
+        "dependsOn": ["build", "@myCommerce/api:serve"]
+      }
+    }
+  },
+  "devDependencies": {
+    "@myCommerce/models": "*",
+    "@myCommerce/shop-data": "*",
+    "@myCommerce/shop-feature-product-detail": "*",
+    "@myCommerce/shop-feature-products": "*",
+    "@myCommerce/shop-shared-ui": "*"
+  }
+}
