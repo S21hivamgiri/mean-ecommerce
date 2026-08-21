@@ -1,12 +1,15 @@
 import { Router } from 'express';
 
-import { OrdersController } from './orders.controller';
-import { OrdersService } from './orders.service';
-import { OrdersRepository } from './orders.repository';
+import {
+  OrdersController,
+  OrdersService,
+  OrdersRepository,
+} from '@myCommerce/api-orders';
+import { prisma } from './infrastructure/db/prisma';
 
 const router = Router();
 
-const repository = new OrdersRepository();
+const repository = new OrdersRepository(prisma);
 const service = new OrdersService(repository);
 const controller = new OrdersController(service);
 
@@ -16,4 +19,4 @@ router.get('/:id', controller.getOrder);
 
 router.post('/', controller.createOrder);
 
-export const ordersRouter = router;
+export const OrdersRouter = router;

@@ -1,2 +1,4 @@
 export { OrdersService } from './lib/orders.service';
-export { ordersRouter } from './lib/orders.route';
+export { OrdersRepository } from './lib/orders.repository';
+export { OrdersController } from './lib/orders.controller';
+export { createOrderSchema } from './lib/orders.types';
