@@ -59,3 +59,4 @@ package-lock.json
 .agents
 .windsurf
 skills-lock.json
+migration_lock.toml

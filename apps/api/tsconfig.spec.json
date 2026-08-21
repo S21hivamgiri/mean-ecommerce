@@ -3,7 +3,10 @@
   "compilerOptions": {
     "outDir": "./out-tsc/vitest",
     "types": ["vitest/globals", "vitest/importMeta", "node", "vitest"],
-    "module": "nodenext",
+    "module": "NodeNext",
+    "paths": {
+      "@prisma/client": ["../../ /node_modules/@prisma/client"]
+    },
     "moduleResolution": "nodenext"
   },
   "include": [
