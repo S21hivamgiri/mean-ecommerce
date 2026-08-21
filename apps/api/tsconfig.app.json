@@ -25,6 +25,9 @@
     },
     {
       "path": "../../packages/api/products/tsconfig.lib.json"
+    },
+    {
+      "path": "../../packages/api/orders/tsconfig.lib.json"
     }
   ]
 }

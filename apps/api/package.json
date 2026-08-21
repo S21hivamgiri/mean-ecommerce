@@ -7,6 +7,9 @@
     "targets": {
       "build": {
         "executor": "@nx/esbuild:esbuild",
+        "dependsOn": [
+          "@myCommerce/api-orders:build"
+        ],
         "outputs": [
           "{options.outputPath}"
         ],
@@ -125,6 +128,7 @@
   "dependencies": {
     "express": "^4.21.2",
     "@myCommerce/api-products": "*",
+    "@myCommerce/api-orders": "*",
     "@myCommerce/models": "*"
   }
 }
