@@ -38,11 +38,22 @@ export class OrdersService {
     };
 
     const createdOrder = await this.ordersRepository.create(order);
-    await paymentQueue.add('process-payment', {
-      orderId: createdOrder.id,
-      userId: createdOrder.userId,
-      amountCents: createdOrder.totalCents,
-    });
+    await paymentQueue.add(
+      'process-payment',
+      {
+        orderId: createdOrder.id,
+        userId: createdOrder.userId,
+        amountCents: createdOrder.totalCents,
+      },
+      {
+        attempts: 3,
+
+        backoff: {
+          type: 'exponential',
+          delay: 1000,
+        },
+      },
+    );
     return createdOrder;
   }
 }

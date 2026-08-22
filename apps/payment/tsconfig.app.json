@@ -21,6 +21,9 @@
   ],
   "references": [
     {
+      "path": "../../packages/shared/queue/tsconfig.lib.json"
+    },
+    {
       "path": "../../packages/shared/models/tsconfig.lib.json"
     },
     {

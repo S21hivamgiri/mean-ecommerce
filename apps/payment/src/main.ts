@@ -3,7 +3,9 @@ import express from 'express';
 
 const host = process.env.HOST ?? 'localhost';
 const port = process.env.PORT ? Number(process.env.PORT) : 5555;
+import './payment.worker';
 
+console.log('Payment worker started');
 const app = express();
 app.use(express.json());
 
