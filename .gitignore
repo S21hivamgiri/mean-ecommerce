@@ -60,3 +60,4 @@ package-lock.json
 .windsurf
 skills-lock.json
 migration_lock.toml
+prisma/migrations
