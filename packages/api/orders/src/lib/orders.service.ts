@@ -1,7 +1,8 @@
 import type { Order } from '@myCommerce/models';
 import { randomUUID } from 'crypto';
 import { OrdersRepository } from './orders.repository';
-import {InventoryClient} from '../clients/inventory.client'
+import { InventoryClient } from '../clients/inventory.client';
+import { paymentQueue } from '@myCommerce/queue';
 
 export class OrdersService {
   constructor(
@@ -20,7 +21,7 @@ export class OrdersService {
     productId: string,
     userId: string,
     totalCents: number,
-    quantity: number
+    quantity: number,
   ): Promise<Order> {
     if (totalCents <= 0) {
       throw new Error('Order total must be greater than zero');
@@ -36,6 +37,12 @@ export class OrdersService {
       status: 'PENDING',
     };
 
-    return this.ordersRepository.create(order);
+    const createdOrder = await this.ordersRepository.create(order);
+    await paymentQueue.add('process-payment', {
+      orderId: createdOrder.id,
+      userId: createdOrder.userId,
+      amountCents: createdOrder.totalCents,
+    });
+    return createdOrder;
   }
 }
