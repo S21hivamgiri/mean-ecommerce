@@ -19,8 +19,10 @@ const controller = new ProductsController(service);
 
  router.post('/', controller.createProduct);
  router.get('/', controller.allProducts);
+ router.get('/categories', controller.getCategories);
  router.get('/:id', controller.getProduct);
-// const productsService = new ProductsService();
+
+ // const productsService = new ProductsService();
 // // Products endpoints
 // router.get('/', (req, res) => {
 //   try {
@@ -58,24 +60,6 @@ const controller = new ProductsController(service);
 //       data: null,
 //       success: false,
 //       error: 'An error occurred while fetching products',
-//     };
-//     res.status(500).json(response);
-//   }
-// });
-
-// router.get('/categories', (req, res) => {
-//   try {
-//     const categories = productsService.getCategories();
-//     const response: ApiResponse<string[]> = {
-//       data: categories,
-//       success: true,
-//     };
-//     res.json(response);
-//   } catch {
-//     const response: ApiResponse<null> = {
-//       data: null,
-//       success: false,
-//       error: 'An error occurred while fetching categories',
 //     };
 //     res.status(500).json(response);
 //   }

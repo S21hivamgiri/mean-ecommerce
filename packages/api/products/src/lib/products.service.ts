@@ -6,7 +6,6 @@ import { randomUUID } from 'crypto';
 export class ProductsService {
   constructor(private readonly productsRepository: ProductsRepository) {}
 
-  private products: Product[] = [];
   // getProducts(filter?: ProductFilter, page = 1, pageSize = 10) {
   //   let filteredProducts = [...this.products];
 
@@ -57,9 +56,8 @@ export class ProductsService {
   //   };
   // }
 
-  getCategories(): string[] {
-    const categories = new Set(this.products.map((p) => p.category));
-    return Array.from(categories).sort();
+  async getCategories(): Promise<string[]> {
+    return this.productsRepository.findCategories();
   }
 
   async getProducts(): Promise<Product[]> {

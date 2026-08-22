@@ -12,9 +12,7 @@ const service = new OrdersService(repository);
 const controller = new OrdersController(service);
 
 router.get('/', controller.getOrders);
-
 router.get('/:id', controller.getOrder);
-
 router.post('/', controller.createOrder);
 
 export const OrdersRouter = router;

@@ -11,6 +11,19 @@ export class ProductsRepository {
     };
   }
 
+  async findCategories(): Promise<string[]> {
+    const categories = await this.prisma.product.findMany({
+      distinct: ['category'],
+      select: {
+        category: true,
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    });
+    return categories.map(data => data.category);
+  }
+
   async findById(id: string): Promise<Product | undefined> {
     const product = await this.prisma.product.findUnique({
       where: {

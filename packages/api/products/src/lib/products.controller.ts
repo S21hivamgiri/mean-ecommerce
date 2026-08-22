@@ -11,6 +11,12 @@ export class ProductsController {
     res.json(products);
   };
 
+  getCategories = async (req: Request, res: Response) => {
+    const categories = await this.productsService.getCategories();
+
+    res.json(categories);
+  };
+
   getProduct = async (req: Request, res: Response) => {
     const product = await this.productsService.getProduct(req.params.id);
 
