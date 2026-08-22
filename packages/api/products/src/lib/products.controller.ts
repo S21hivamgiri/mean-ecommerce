@@ -1,0 +1,33 @@
+import type { Request, Response } from 'express';
+import { ProductsService } from './products.service';
+import { createProductSchema } from './products.types';
+
+export class ProductsController {
+  constructor(private readonly productsService: ProductsService) {}
+
+  createProduct = async (req: Request, res: Response) => {
+    const result = createProductSchema.safeParse(req.body);
+
+    if (!result.success) {
+      res.status(400).json({
+        message: 'Invalid request',
+        errors: result.error.flatten(),
+      });
+
+      return;
+    }
+
+    const { name, price, description, category, imageUrl, inventoryCount } =
+      result.data;
+    const order = await this.productsService.createProduct(
+      name,
+      inventoryCount,
+      price,
+      category,
+      imageUrl,
+      description,
+    );
+
+    res.status(201).json(order);
+  };
+}
