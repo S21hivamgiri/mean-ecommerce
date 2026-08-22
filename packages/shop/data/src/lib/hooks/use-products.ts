@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Product, ApiResponse, PaginatedResponse, ProductFilter } from '@myCommerce/models';
 
-const API_URL = 'http://localhost:3333';
+const API_URL = 'http://localhost:4444';
 
 export function useProducts(
   filter?: ProductFilter,
