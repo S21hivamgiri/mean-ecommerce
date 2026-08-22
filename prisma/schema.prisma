@@ -14,24 +14,35 @@ model Order {
   status     String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  product    Product  @relation(fields: [productId], references: [id])
 
   @@index([userId])
   @@index([status])
 }
 
-model Product{
-  id              String   @id @default(uuid())
-  name            String
-  description     String?
-  price           Int
-  category        String
-  imageUrl        String
-  inStock         Boolean
-  inventoryCount  Int
-  rating          Int @default(0)
-  reviewCount     Int @default(0)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+model Product {
+  id          String     @id @default(uuid())
+  name        String
+  description String?
+  price       Int
+  category    String
+  imageUrl    String
+  inStock     Boolean
+  rating      Int        @default(0)
+  reviewCount Int        @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  inventory   Inventory?
+  orders      Order[]
+}
 
-  @@index([inventoryCount])
+model Inventory {
+  id        String @id @default(uuid())
+  productId String @unique
+  quantity  Int
+  reserved  Int    @default(0)
+
+  product Product @relation(fields: [productId], references: [id])
+
+  @@index([productId])
 }
