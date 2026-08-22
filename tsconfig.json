@@ -38,6 +38,9 @@
     },
     {
       "path": "./apps/inventory"
+    },
+    {
+      "path": "./apps/payment"
     }
   ]
 }

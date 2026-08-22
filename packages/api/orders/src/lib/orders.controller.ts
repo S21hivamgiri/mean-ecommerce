@@ -37,11 +37,12 @@ export class OrdersController {
       return;
     }
 
-    const { userId, totalCents, productId } = result.data;
+    const { userId, totalCents, productId, quantity } = result.data;
     const order = await this.ordersService.createOrder(
       productId,
       userId,
       totalCents,
+      quantity,
     );
 
     res.status(201).json(order);
