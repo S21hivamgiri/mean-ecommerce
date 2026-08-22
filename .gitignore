@@ -61,3 +61,4 @@ package-lock.json
 skills-lock.json
 migration_lock.toml
 prisma/migrations
+.vscode
