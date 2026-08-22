@@ -2,7 +2,7 @@ import { errorHandler } from './middleware/error-handler';
 import express from 'express';
 
 const host = process.env.HOST ?? 'localhost';
-const port = process.env.PORT ? Number(process.env.PORT) : 3333;
+const port = process.env.PORT ? Number(process.env.PORT) : 5555;
 
 const app = express();
 app.use(express.json());
