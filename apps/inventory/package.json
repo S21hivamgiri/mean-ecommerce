@@ -1,5 +1,5 @@
 {
-  "name": "@myCommerce/api",
+  "name": "@myCommerce/inventory",
   "version": "0.0.1",
   "private": true,
   "nx": {
@@ -8,7 +8,7 @@
       "build": {
         "executor": "@nx/esbuild:esbuild",
         "dependsOn": [
-          "@myCommerce/api-orders:build"
+          "@myCommerce/api-products:build"
         ],
         "outputs": [
           "{options.outputPath}"
@@ -16,15 +16,15 @@
         "defaultConfiguration": "production",
         "options": {
           "platform": "node",
-          "outputPath": "apps/api/dist",
+          "outputPath": "apps/inventory/dist",
           "format": [
             "cjs"
           ],
           "bundle": true,
-          "main": "apps/api/src/main.ts",
-          "tsConfig": "apps/api/tsconfig.app.json",
+          "main": "apps/inventory/src/main.ts",
+          "tsConfig": "apps/inventory/tsconfig.app.json",
           "assets": [
-            "apps/api/src/assets"
+            "apps/inventory/src/assets"
           ],
           "esbuildOptions": {
             "sourcemap": true,
@@ -53,8 +53,8 @@
         "cache": true,
         "executor": "@nx/js:prune-lockfile",
         "outputs": [
-          "{workspaceRoot}/apps/api/dist/package.json",
-          "{workspaceRoot}/apps/api/dist/pnpm-lock.yaml"
+          "{workspaceRoot}/apps/inventory/dist/package.json",
+          "{workspaceRoot}/apps/inventory/dist/pnpm-lock.yaml"
         ],
         "options": {
           "buildTarget": "build"
@@ -66,7 +66,7 @@
         ],
         "cache": true,
         "outputs": [
-          "{workspaceRoot}/apps/api/dist/workspace_modules"
+          "{workspaceRoot}/apps/inventory/dist/workspace_modules"
         ],
         "executor": "@nx/js:copy-workspace-modules",
         "options": {
@@ -88,15 +88,15 @@
           "build"
         ],
         "options": {
-          "buildTarget": "@myCommerce/api:build",
+          "buildTarget": "@myCommerce/inventory:build",
           "runBuildTargetDependencies": false
         },
         "configurations": {
           "development": {
-            "buildTarget": "@myCommerce/api:build:development"
+            "buildTarget": "@myCommerce/inventory:build:development"
           },
           "production": {
-            "buildTarget": "@myCommerce/api:build:production"
+            "buildTarget": "@myCommerce/inventory:build:production"
           }
         }
       },
@@ -122,12 +122,12 @@
       }
     },
     "tags": [
-      "scope:api"
+      "scope:inventory"
     ]
   },
   "dependencies": {
     "express": "^4.21.2",
-    "@myCommerce/api-orders": "*",
+    "@myCommerce/api-products": "*",
     "@myCommerce/models": "*"
   }
 }

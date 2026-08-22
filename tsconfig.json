@@ -35,6 +35,9 @@
     },
     {
       "path": "./packages/shared/test-utils"
+    },
+    {
+      "path": "./apps/inventory"
     }
   ]
 }

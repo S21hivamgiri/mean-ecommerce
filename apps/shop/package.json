@@ -4,16 +4,28 @@
   "private": true,
   "nx": {
     "projectType": "application",
-    "tags": ["scope:shop"],
+    "tags": [
+      "scope:shop"
+    ],
     "targets": {
       "serve": {
-        "dependsOn": ["@myCommerce/api:serve"]
+        "dependsOn": [
+          "@myCommerce/api:serve",
+          "@myCommerce/inventory:serve"
+        ]
       },
       "dev": {
-        "dependsOn": ["@myCommerce/api:serve"]
+        "dependsOn": [
+          "@myCommerce/api:serve",
+          "@myCommerce/inventory:serve"
+        ]
       },
       "preview": {
-        "dependsOn": ["build", "@myCommerce/api:serve"]
+        "dependsOn": [
+          "build",
+          "@myCommerce/api:serve",
+          "@myCommerce/inventory:serve"
+        ]
       }
     }
   },

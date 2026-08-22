@@ -1,13 +1,12 @@
-import { OrdersRouter } from './orders.route';
+import { ProductRouter } from './products.route';
 import { errorHandler } from './middleware/error-handler';
 import express from 'express';
 
 const host = process.env.HOST ?? 'localhost';
-const port = process.env.PORT ? Number(process.env.PORT) : 3333;
+const port = process.env.PORT ? Number(process.env.PORT) : 4444;
 
 const app = express();
 app.use(express.json());
-
 app.get('/health', (_req, res) => {
   res.json({
     status: 'ok',
@@ -15,7 +14,7 @@ app.get('/health', (_req, res) => {
 });
 
 app.get('/', (_req, res) => {
-  res.send('Order Server');
+  res.send('Inventory Server');
 });
 
 // CORS configuration for React app
@@ -33,7 +32,7 @@ app.use((req, res, next) => {
   }
 });
 
-app.use('/orders', OrdersRouter);
+app.use('/products', ProductRouter);
 app.use(errorHandler);
 app.listen(port, host, () => {
   console.log(`[ ready ] http://${host}:${port}`);
