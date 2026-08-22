@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Product, ApiResponse, PaginatedResponse, ProductFilter } from '@myCommerce/models';
 
-const API_URL = 'http://localhost:3333/api';
+const API_URL = 'http://localhost:3333';
 
 export function useProducts(
   filter?: ProductFilter,
@@ -34,15 +34,15 @@ export function useProducts(
         }
 
         const response = await fetch(`${API_URL}/products?${params}`);
-        const data: ApiResponse<PaginatedResponse<Product>> = await response.json() as ApiResponse<PaginatedResponse<Product>>;
+        const data: Product[] = await response.json() as Product[];
 
-        if (!data.success) {
-          throw new Error(data.error || 'Failed to load products');
+        if (!data) {
+          throw new Error( 'Failed to load products');
         }
 
-        setProducts(data.data.items);
-        setTotalProducts(data.data.total);
-        setTotalPages(data.data.totalPages);
+        setProducts(data);
+        setTotalProducts(data.length);
+        setTotalPages(1);
       } catch (err) {
         const message = err instanceof Error ? err.message : 'An error occurred while loading products';
         setError(message);

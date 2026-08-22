@@ -75,7 +75,7 @@ export function ProductDetail() {
           </div>
 
           <div className={styles['product-price']}>
-            ${product.price.toFixed(2)}
+            €{(product.price/100).toFixed(2)}
           </div>
 
           <div className={styles['product-availability']}>
