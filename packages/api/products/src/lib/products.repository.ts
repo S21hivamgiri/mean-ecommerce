@@ -11,6 +11,16 @@ export class ProductsRepository {
     };
   }
 
+  async findById(id: string): Promise<Product | undefined> {
+    const product = await this.prisma.product.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    return product ? this.mapProduct(product) : undefined;
+  }
+
   async findAll(): Promise<Product[]> {
     const products = await this.prisma.product.findMany({
       orderBy: {

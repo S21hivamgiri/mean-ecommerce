@@ -11,6 +11,20 @@ export class ProductsController {
     res.json(products);
   };
 
+  getProduct = async (req: Request, res: Response) => {
+    const product = await this.productsService.getProduct(req.params.id);
+
+    if (!product) {
+      res.status(404).json({
+        message: 'Order not found',
+      });
+
+      return;
+    }
+
+    res.json(product);
+  };
+
   createProduct = async (req: Request, res: Response) => {
     const result = createProductSchema.safeParse(req.body);
 

@@ -19,6 +19,7 @@ const controller = new ProductsController(service);
 
  router.post('/', controller.createProduct);
  router.get('/', controller.allProducts);
+ router.get('/:id', controller.getProduct);
 // const productsService = new ProductsService();
 // // Products endpoints
 // router.get('/', (req, res) => {
@@ -80,32 +81,5 @@ const controller = new ProductsController(service);
 //   }
 // });
 
-// router.get('/:id', (req, res) => {
-//   try {
-//     const product = productsService.getProductById(req.params.id);
-
-//     if (!product) {
-//       const response: ApiResponse<null> = {
-//         data: null,
-//         success: false,
-//         error: 'Product not found',
-//       };
-//       return res.status(404).json(response);
-//     }
-
-//     const response: ApiResponse<Product> = {
-//       data: product,
-//       success: true,
-//     };
-//     return res.json(response);
-//   } catch {
-//     const response: ApiResponse<null> = {
-//       data: null,
-//       success: false,
-//       error: 'An error occurred while fetching the product',
-//     };
-//     return res.status(500).json(response);
-//   }
-// });
- export const ProductRouter = router;
+export const ProductRouter = router;
 

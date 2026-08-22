@@ -57,10 +57,6 @@ export class ProductsService {
   //   };
   // }
 
-  getProductById(id: string): Product | undefined {
-    return this.products.find((p) => p.id === id);
-  }
-
   getCategories(): string[] {
     const categories = new Set(this.products.map((p) => p.category));
     return Array.from(categories).sort();
@@ -68,6 +64,10 @@ export class ProductsService {
 
   async getProducts(): Promise<Product[]> {
     return this.productsRepository.findAll();
+  }
+
+  async getProduct(id: string): Promise<Product | undefined> {
+    return this.productsRepository.findById(id);
   }
 
   async createProduct(
