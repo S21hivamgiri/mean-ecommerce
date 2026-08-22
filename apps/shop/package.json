@@ -11,19 +11,22 @@
       "serve": {
         "dependsOn": [
           "@myCommerce/api:serve",
-          "@myCommerce/inventory:serve"
+          "@myCommerce/inventory:serve",
+          "@myCommerce/payment:serve"
         ]
       },
       "dev": {
         "dependsOn": [
           "@myCommerce/api:serve",
-          "@myCommerce/inventory:serve"
+          "@myCommerce/inventory:serve",
+          "@myCommerce/payment:serve"
         ]
       },
       "preview": {
         "dependsOn": [
           "build",
           "@myCommerce/api:serve",
+          "@myCommerce/payment:serve",
           "@myCommerce/inventory:serve"
         ]
       }
