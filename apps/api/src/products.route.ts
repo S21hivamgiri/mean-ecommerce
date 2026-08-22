@@ -18,6 +18,7 @@ const service = new ProductsService(repository);
 const controller = new ProductsController(service);
 
  router.post('/', controller.createProduct);
+ router.get('/', controller.allProducts);
 // const productsService = new ProductsService();
 // // Products endpoints
 // router.get('/', (req, res) => {

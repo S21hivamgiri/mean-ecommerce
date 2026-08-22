@@ -5,6 +5,12 @@ import { createProductSchema } from './products.types';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
+  allProducts = async (req: Request, res: Response) => {
+    const products = await this.productsService.getProducts();
+
+    res.json(products);
+  };
+
   createProduct = async (req: Request, res: Response) => {
     const result = createProductSchema.safeParse(req.body);
 
