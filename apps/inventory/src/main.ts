@@ -1,6 +1,7 @@
 import { ProductRouter } from './products.route';
 import { errorHandler } from './middleware/error-handler';
 import express from 'express';
+import { InventoryRouter } from './inventory.route';
 
 const host = process.env.HOST ?? 'localhost';
 const port = process.env.PORT ? Number(process.env.PORT) : 4444;
@@ -33,6 +34,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/products', ProductRouter);
+app.use('/inventory', InventoryRouter);
 app.use(errorHandler);
 app.listen(port, host, () => {
   console.log(`[ ready ] http://${host}:${port}`);
