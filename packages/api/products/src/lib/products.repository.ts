@@ -52,7 +52,6 @@ export class ProductsRepository {
         category: product.category,
         imageUrl: product.imageUrl,
         price: product.price,
-        inventoryCount: product.inventoryCount,
         inStock: true,
         reviewCount: 0,
         rating: 0,

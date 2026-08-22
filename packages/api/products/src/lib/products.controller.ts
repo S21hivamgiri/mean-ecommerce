@@ -43,11 +43,10 @@ export class ProductsController {
       return;
     }
 
-    const { name, price, description, category, imageUrl, inventoryCount } =
+    const { name, price, description, category, imageUrl } =
       result.data;
     const order = await this.productsService.createProduct(
       name,
-      inventoryCount,
       price,
       category,
       imageUrl,

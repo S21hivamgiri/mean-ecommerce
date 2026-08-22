@@ -71,14 +71,10 @@ export class ProductsService {
   async createProduct(
     name: string,
     price: number,
-    inventoryCount: number,
     category: string,
     imageUrl: string,
     description?: string,
   ): Promise<Product> {
-    if (inventoryCount <= 0) {
-      throw new Error('Product Inventory Count must be greater than zero');
-    }
     if (price < 0) {
       throw new Error('Product price must be positive');
     }
@@ -90,7 +86,6 @@ export class ProductsService {
       category,
       imageUrl,
       price,
-      inventoryCount,
       inStock: true,
       reviewCount: 0,
       rating: 0,

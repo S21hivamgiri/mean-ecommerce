@@ -6,7 +6,6 @@ export interface Product {
   category: string;
   imageUrl: string;
   inStock: boolean;
-  inventoryCount: number;
   rating: number;
   reviewCount: number;
 }
