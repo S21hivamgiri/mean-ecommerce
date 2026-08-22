@@ -11,11 +11,13 @@ model Order {
   userId     String
   productId  String
   totalCents Int
+  quantity   Int
   status     String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   product    Product  @relation(fields: [productId], references: [id])
 
+  @@index([productId])
   @@index([userId])
   @@index([status])
 }
