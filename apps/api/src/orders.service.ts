@@ -3,6 +3,9 @@ import { randomUUID } from 'crypto';
 import { OrdersRepository } from './orders.repository';
 import { InventoryClient } from './infrastructure/client/inventory.client';
 import { createLogger } from '@myCommerce/logger';
+import { trace } from '@opentelemetry/api';
+
+const tracer = trace.getTracer('order-service');
 
 export class OrdersService {
   constructor(
@@ -30,6 +33,7 @@ export class OrdersService {
     if (totalCents <= 0) {
       throw new Error('Order total must be greater than zero');
     }
+    const span = tracer.startSpan('order.create');
 
     await this.inventoryClient.reserve(productId, quantity, requestId);
     const order: Order = {
@@ -48,7 +52,7 @@ export class OrdersService {
         productId,
         quantity,
         totalCents,
-        requestId
+        requestId,
       },
       'Creating order',
     );
@@ -62,12 +66,34 @@ export class OrdersService {
         requestId,
       },
     };
-    this.logger.info(
-      {
-        orderId: order.id,
-      },
-      'Order created',
-    );
-    return this.ordersRepository.createWithEvent(order, event);
+
+    try {
+      const orderResult = await this.ordersRepository.createWithEvent(
+        order,
+        event,
+      );
+      span.setAttributes({
+        'order.id': orderResult.id,
+        'order.quantity': orderResult.quantity,
+        'order.total_cents': orderResult.totalCents,
+      });
+      this.logger.info(
+        {
+          orderId: orderResult.id,
+        },
+        'Order created',
+      );
+      return orderResult;
+    } catch (error) {
+      span.recordException(error as Error);
+
+      span.setStatus({
+        code: 2,
+      });
+
+      throw error;
+    } finally {
+      span.end();
+    }
   }
 }
