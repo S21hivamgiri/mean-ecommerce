@@ -21,6 +21,9 @@
   ],
   "references": [
     {
+      "path": "../../packages/shared/observability/tsconfig.lib.json"
+    },
+    {
       "path": "../../packages/shared/logger/tsconfig.lib.json"
     },
     {

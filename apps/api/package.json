@@ -129,6 +129,7 @@
     "express": "^4.21.2",
     "@myCommerce/api-orders": "*",
     "@myCommerce/models": "*",
-    "@myCommerce/logger": "*"
+    "@myCommerce/logger": "*",
+    "@myCommerce/observability": "*"
   }
 }
