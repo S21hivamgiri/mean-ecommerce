@@ -1,11 +1,9 @@
 import type { Order } from '@myCommerce/models';
 import { PrismaClient } from '@prisma/client';
-import { OrderStatus } from '@myCommerce/models';
+import { OrderStatus, DomainEvent } from '@myCommerce/models';
 
 export class OrdersRepository {
-  constructor(
-    private readonly prisma: PrismaClient
-  ) {}
+  constructor(private readonly prisma: PrismaClient) {}
 
   private mapOrder(order: any): Order {
     return {
@@ -34,17 +32,27 @@ export class OrdersRepository {
     return order ? this.mapOrder(order) : undefined;
   }
 
-  async create(order: Order): Promise<Order> {
-    const createdOrder = await this.prisma.order.create({
-      data: {
-        id: order.id,
-        productId: order.productId,
-        totalCents: order.totalCents,
-        status: `${order.status}`,
-        userId: order.userId,
-      },
-    });
+  async createWithEvent(order: Order, event: DomainEvent): Promise<Order> {
+    return this.prisma.$transaction(async (tx) => {
+      const createdOrder = await tx.order.create({
+        data: {
+          id: order.id,
+          userId: order.userId,
+          productId: order.productId,
+          quantity: order.quantity,
+          totalCents: order.totalCents,
+          status: order.status,
+        },
+      });
 
-    return this.mapOrder(createdOrder);
+      await tx.outboxEvent.create({
+        data: {
+          type: event.type,
+          payload: event.payload,
+        },
+      });
+
+      return this.mapOrder(createdOrder);
+    });
   }
 }

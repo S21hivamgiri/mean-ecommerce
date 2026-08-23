@@ -1,8 +1,7 @@
-import type { Order } from '@myCommerce/models';
+import { Order, PaymentRequestedEvent } from '@myCommerce/models';
 import { randomUUID } from 'crypto';
 import { OrdersRepository } from './orders.repository';
 import { InventoryClient } from '../clients/inventory.client';
-import { paymentQueue } from '@myCommerce/queue';
 
 export class OrdersService {
   constructor(
@@ -37,23 +36,16 @@ export class OrdersService {
       status: 'PENDING',
     };
 
-    const createdOrder = await this.ordersRepository.create(order);
-    await paymentQueue.add(
-      'process-payment',
-      {
-        orderId: createdOrder.id,
-        userId: createdOrder.userId,
-        amountCents: createdOrder.totalCents,
-      },
-      {
-        attempts: 3,
+     const event: PaymentRequestedEvent = {
+       type: 'payment.requested',
 
-        backoff: {
-          type: 'exponential',
-          delay: 1000,
-        },
-      },
-    );
-    return createdOrder;
+       payload: {
+         orderId: order.id,
+         userId: order.userId,
+         amountCents: order.totalCents,
+       },
+     };
+
+     return this.ordersRepository.createWithEvent(order, event);
   }
 }
