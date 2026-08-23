@@ -1,5 +1,5 @@
 {
-  "name": "@myCommerce/models",
+  "name": "@myCommerce/logger",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -19,5 +19,7 @@
       "type:data"
     ]
   },
-  "dependencies": {}
+  "dependencies": {
+    "pino": "^10.3.1"
+  }
 }
