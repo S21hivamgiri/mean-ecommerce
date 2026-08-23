@@ -11,8 +11,10 @@ processors:
   batch:
 
 exporters:
-  debug:
-    verbosity: detailed
+  otlp/tempo:
+    endpoint: tempo:4317
+    tls:
+      insecure: true
 
 service:
   pipelines:
@@ -24,4 +26,4 @@ service:
         - batch
 
       exporters:
-        - debug
+        - otlp/tempo
