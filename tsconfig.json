@@ -47,9 +47,6 @@
     },
     {
       "path": "./apps/outbox"
-    },
-    {
-      "path": "./packages/api/outbox"
     }
   ]
 }
