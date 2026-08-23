@@ -1,7 +1,7 @@
 import { Queue } from 'bullmq';
 import { redis } from './connection.js';
-
-export interface PaymentJob {
+import { Prisma } from '@prisma/client';
+export interface PaymentJob extends Prisma.JsonObject {
   orderId: string;
   userId: string;
   amountCents: number;

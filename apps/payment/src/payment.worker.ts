@@ -11,8 +11,8 @@ export const paymentWorker = new Worker<PaymentJob>(
     console.log(`Amount: ${job.data.amountCents} cents`);
 
     // Simulate payment processing
-   //await new Promise((resolve) => setTimeout(resolve, 1000));
-    throw new Error('Payment provider unavailable');
+   await new Promise((resolve) => setTimeout(resolve, 5000));
+   // throw new Error('Payment provider unavailable');
     console.log(`Payment completed for ${job.data.orderId}`);
   },
 
