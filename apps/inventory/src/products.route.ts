@@ -1,9 +1,7 @@
 import { Router } from 'express';
-import {
-  ProductsService,
-  ProductsRepository,
-  ProductsController,
-} from '@myCommerce/api-products';
+import { ProductsService } from './products.service';
+import { ProductsRepository } from './products.repository';
+import { ProductsController } from './products.controller';
 // import {
 //   ApiResponse,
 //   Product,
@@ -17,12 +15,12 @@ const repository = new ProductsRepository(prisma);
 const service = new ProductsService(repository);
 const controller = new ProductsController(service);
 
- router.post('/', controller.createProduct);
- router.get('/', controller.allProducts);
- router.get('/categories', controller.getCategories);
- router.get('/:id', controller.getProduct);
+router.post('/', controller.createProduct);
+router.get('/', controller.allProducts);
+router.get('/categories', controller.getCategories);
+router.get('/:id', controller.getProduct);
 
- // const productsService = new ProductsService();
+// const productsService = new ProductsService();
 // // Products endpoints
 // router.get('/', (req, res) => {
 //   try {
@@ -66,4 +64,3 @@ const controller = new ProductsController(service);
 // });
 
 export const ProductRouter = router;
-

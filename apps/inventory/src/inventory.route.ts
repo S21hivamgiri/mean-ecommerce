@@ -1,9 +1,8 @@
 import { Router } from 'express';
-
 import { prisma } from './infrastructure/db/prisma';
-import { InventoryController } from '@myCommerce/api-products';
-import { InventoryRepository } from '@myCommerce/api-products';
-import { InventoryService } from '@myCommerce/api-products';
+import { InventoryController } from './inventory.controller';
+import { InventoryRepository } from './inventory.repository';
+import { InventoryService } from './inventory.service';
 
 const router = Router();
 
