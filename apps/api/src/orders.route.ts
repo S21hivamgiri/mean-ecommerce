@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import {
   OrdersController,
-  OrdersService,
-  OrdersRepository,
-  InventoryClient,
-} from '@myCommerce/api-orders';
+} from './orders.controller';
+ import{ OrdersService,} from './orders.service';
+ import{ OrdersRepository} from './orders.repository'
+ import{ InventoryClient} from './infrastructure/client/inventory.client'
 import { prisma } from './infrastructure/db/prisma';
 
 const INVENTORY_SERVICE_URL = 'http://localhost:4444';
