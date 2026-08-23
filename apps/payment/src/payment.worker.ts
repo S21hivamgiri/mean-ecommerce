@@ -1,19 +1,35 @@
 import { Worker } from 'bullmq';
 
+import { createLogger } from '@myCommerce/logger';
 import { redis, type PaymentJob } from '@myCommerce/queue';
+const logger = createLogger('payment-worker');
 
 export const paymentWorker = new Worker<PaymentJob>(
   'payments',
 
   async (job) => {
-    console.log(`Processing payment for order ${job.data.orderId}`);
+    const { orderId, amountCents, requestId } = job.data;
 
-    console.log(`Amount: ${job.data.amountCents} cents`);
+    logger.info(
+      {
+        requestId,
+        orderId,
+        amountCents,
+        jobId: job.id,
+      },
+      'Processing payment',
+    );
 
-    // Simulate payment processing
-   await new Promise((resolve) => setTimeout(resolve, 5000));
-   // throw new Error('Payment provider unavailable');
-    console.log(`Payment completed for ${job.data.orderId}`);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    logger.info(
+      {
+        requestId,
+        orderId,
+        jobId: job.id,
+      },
+      'Payment completed',
+    );
   },
 
   {

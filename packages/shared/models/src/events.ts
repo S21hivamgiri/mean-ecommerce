@@ -5,6 +5,7 @@ export interface PaymentRequestedEvent {
     orderId: string;
     userId: string;
     amountCents: number;
+    requestId: string;
   };
 }
 

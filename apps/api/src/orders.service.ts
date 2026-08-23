@@ -48,6 +48,7 @@ export class OrdersService {
         productId,
         quantity,
         totalCents,
+        requestId
       },
       'Creating order',
     );
@@ -58,6 +59,7 @@ export class OrdersService {
         orderId: order.id,
         userId: order.userId,
         amountCents: order.totalCents,
+        requestId,
       },
     };
     this.logger.info(
