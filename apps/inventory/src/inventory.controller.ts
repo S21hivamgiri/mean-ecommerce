@@ -22,6 +22,7 @@ export class InventoryController {
       const inventory = await this.service.reserve(
         result.data.productId,
         result.data.quantity,
+        req.requestId,
       );
 
       res.json(inventory);

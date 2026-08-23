@@ -24,10 +24,10 @@
       "path": "../../packages/shared/queue/tsconfig.lib.json"
     },
     {
-      "path": "../../packages/shared/models/tsconfig.lib.json"
+      "path": "../../packages/shared/logger/tsconfig.lib.json"
     },
     {
-      "path": "../../packages/api/orders/tsconfig.lib.json"
+      "path": "../../packages/shared/models/tsconfig.lib.json"
     }
   ]
 }

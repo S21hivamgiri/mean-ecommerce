@@ -41,7 +41,7 @@ paymentWorker.on('completed', (job) => {
   console.log(`Job ${job.id} completed`);
 });
 paymentWorker.on('failed', (job, error) => {
-  console.error({
+  logger.info({
     event: 'payment_failed',
     jobId: job?.id,
     orderId: job?.data.orderId,

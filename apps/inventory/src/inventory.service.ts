@@ -1,13 +1,22 @@
 import { InventoryRepository } from './inventory.repository';
+import { createLogger } from '@myCommerce/logger';
 
 export class InventoryService {
   constructor(private readonly repository: InventoryRepository) {}
+  logger = createLogger('inventory-service');
 
-  async reserve(productId: string, quantity: number) {
+  async reserve(productId: string, quantity: number, requestId:string) {
     if (quantity <= 0) {
       throw new Error('Quantity must be greater than zero');
     }
-
+    this.logger.info(
+      {
+        requestId: requestId,
+        productId: productId,
+        quantity: quantity,
+      },
+      'Reserving inventory',
+    );
     const inventory = await this.repository.findByProductId(productId);
 
     if (!inventory) {

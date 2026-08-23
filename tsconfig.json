@@ -13,12 +13,6 @@
       "path": "./apps/shop"
     },
     {
-      "path": "./packages/api/products"
-    },
-    {
-      "path": "./packages/api/orders"
-    },
-    {
       "path": "./packages/shared/models"
     },
     {
