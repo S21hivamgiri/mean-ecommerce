@@ -1,3 +1,4 @@
+import './instrumentation';
 import { OrdersRouter } from './orders.route';
 import { errorHandler } from './middleware/error-handler';
 import express from 'express';
@@ -10,15 +11,15 @@ import { requestContext } from './middleware/request-context';
 const logger = createLogger('order-api');
 
 const app = express();
-  app.use(
-    pinoHttp({
-      logger,
-      genReqId: (req) =>
-        req.headers['x-request-id']?.toString() || crypto.randomUUID(),
-    }),
-  );
+app.use(
+  pinoHttp({
+    logger,
+    genReqId: (req) =>
+      req.headers['x-request-id']?.toString() || crypto.randomUUID(),
+  }),
+);
 app.use(express.json());
-  app.use(requestContext);
+app.use(requestContext);
 
 app.get('/health', (_req, res) => {
   res.json({
