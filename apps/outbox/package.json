@@ -1,0 +1,133 @@
+{
+  "name": "@myCommerce/outbox",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "projectType": "application",
+    "targets": {
+      "build": {
+        "executor": "@nx/esbuild:esbuild",
+        "dependsOn": [
+          "@myCommerce/api-outbox:build"
+        ],
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "defaultConfiguration": "production",
+        "options": {
+          "platform": "node",
+          "outputPath": "apps/outbox/dist",
+          "format": [
+            "cjs"
+          ],
+          "bundle": true,
+          "main": "apps/outbox/src/main.ts",
+          "tsConfig": "apps/outbox/tsconfig.app.json",
+          "assets": [
+            "apps/outbox/src/assets"
+          ],
+          "esbuildOptions": {
+            "sourcemap": true,
+            "outExtension": {
+              ".js": ".js"
+            }
+          }
+        },
+        "configurations": {
+          "development": {},
+          "production": {
+            "generateLockfile": true,
+            "esbuildOptions": {
+              "sourcemap": false,
+              "outExtension": {
+                ".js": ".js"
+              }
+            }
+          }
+        }
+      },
+      "prune-lockfile": {
+        "dependsOn": [
+          "build"
+        ],
+        "cache": true,
+        "executor": "@nx/js:prune-lockfile",
+        "outputs": [
+          "{workspaceRoot}/apps/outbox/dist/package.json",
+          "{workspaceRoot}/apps/outbox/dist/pnpm-lock.yaml"
+        ],
+        "options": {
+          "buildTarget": "build"
+        }
+      },
+      "copy-workspace-modules": {
+        "dependsOn": [
+          "build"
+        ],
+        "cache": true,
+        "outputs": [
+          "{workspaceRoot}/apps/outbox/dist/workspace_modules"
+        ],
+        "executor": "@nx/js:copy-workspace-modules",
+        "options": {
+          "buildTarget": "build"
+        }
+      },
+      "prune": {
+        "dependsOn": [
+          "prune-lockfile",
+          "copy-workspace-modules"
+        ],
+        "executor": "nx:noop"
+      },
+      "serve": {
+        "continuous": true,
+        "executor": "@nx/js:node",
+        "defaultConfiguration": "development",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "buildTarget": "@myCommerce/outbox:build",
+          "runBuildTargetDependencies": false
+        },
+        "configurations": {
+          "development": {
+            "buildTarget": "@myCommerce/outbox:build:development"
+          },
+          "production": {
+            "buildTarget": "@myCommerce/outbox:build:production"
+          }
+        }
+      },
+      "test": {
+        "options": {
+          "passWithNoTests": true
+        }
+      },
+      "docker:build": {
+        "dependsOn": [
+          "build",
+          "prune"
+        ]
+      },
+      "nx-release-publish": {
+        "dependsOn": [
+          "docker:build"
+        ],
+        "executor": "@nx/js:release-publish",
+        "options": {
+          "registry": "https://registry.npmjs.org"
+        }
+      }
+    },
+    "tags": [
+      "scope:outbox"
+    ]
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "@myCommerce/api-outbox": "*",
+    "@myCommerce/models": "*"
+  }
+}
