@@ -1,5 +1,4 @@
 import type { NextFunction, Request, Response } from 'express';
-
 import { createLogger } from '@myCommerce/logger';
 
 const logger = createLogger('order-api');

@@ -25,7 +25,7 @@ export class OrdersController {
     res.json(order);
   };
 
-  createOrder = async (req: Request, res: Response,) => {
+  createOrder = async (req: Request, res: Response) => {
     const result = createOrderSchema.safeParse(req.body);
 
     if (!result.success) {
