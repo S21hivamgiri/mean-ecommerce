@@ -4,7 +4,7 @@ import { OrdersRepository } from './orders.repository';
 import { InventoryClient } from './infrastructure/client/inventory.client';
 import { createLogger } from '@myCommerce/logger';
 import { trace } from '@opentelemetry/api';
-
+import { getTraceContext } from '@myCommerce/observability';
 const tracer = trace.getTracer('order-service');
 
 export class OrdersService {
@@ -65,6 +65,7 @@ export class OrdersService {
         amountCents: order.totalCents,
         requestId,
       },
+      traceContext: getTraceContext(),
     };
 
     try {
