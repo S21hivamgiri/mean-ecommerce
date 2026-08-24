@@ -1,5 +1,4 @@
 import { Worker } from 'bullmq';
-
 import { createLogger } from '@myCommerce/logger';
 import { extractTraceContext } from '@myCommerce/observability';
 import { redis, type PaymentJob } from '@myCommerce/queue';
@@ -10,6 +9,7 @@ import {
   SpanKind,
   trace,
 } from '@opentelemetry/api';
+
 const tracer = trace.getTracer('payment-worker');
 
 export const paymentWorker = new Worker<PaymentJob>(
