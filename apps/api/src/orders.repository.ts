@@ -1,6 +1,7 @@
 import type { Order } from '@myCommerce/models';
 import { PrismaClient } from '@prisma/client';
-import { OrderStatus, DomainEvent } from '@myCommerce/models';
+import { OrderStatus } from '@myCommerce/models';
+import { DomainEvent } from '@myCommerce/queue';
 
 export class OrdersRepository {
   constructor(private readonly prisma: PrismaClient) {}

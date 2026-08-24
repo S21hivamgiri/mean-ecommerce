@@ -1,4 +1,5 @@
-import { Order, PaymentRequestedEvent } from '@myCommerce/models';
+import {Order} from "@myCommerce/models"
+import {  PaymentRequestedEvent } from '@myCommerce/queue';
 import { randomUUID } from 'crypto';
 import { OrdersRepository } from './orders.repository';
 import { InventoryClient } from './infrastructure/client/inventory.client';

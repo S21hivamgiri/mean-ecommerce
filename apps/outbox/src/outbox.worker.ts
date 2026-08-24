@@ -1,34 +1,54 @@
-import { paymentQueue, type PaymentJob } from '@myCommerce/queue';
+import { paymentQueue, PaymentJobSchema } from '@myCommerce/queue';
 import { OutboxRepository } from './outbox.repository';
+import { SpanStatusCode, SpanKind, trace } from '@opentelemetry/api';
+
+const tracer = trace.getTracer('outbox-worker');
 
 export class OutboxWorker {
   constructor(private readonly repository: OutboxRepository) {}
 
   async process() {
+    const span = tracer.startSpan('payment.publish', {
+      kind: SpanKind.PRODUCER,
+    });
+
     const events = await this.repository.getUnprocessedEvents();
 
     for (const event of events) {
       try {
         switch (event.type) {
           case 'payment.requested': {
-            const payload = event.payload as PaymentJob;
+            const payload = PaymentJobSchema.parse(event.payload);
+            try {
+              await paymentQueue.add('process-payment', payload, {
+                attempts: 3,
 
-            await paymentQueue.add('process-payment', payload, {
-              attempts: 3,
+                backoff: {
+                  type: 'exponential',
+                  delay: 1000,
+                },
 
-              backoff: {
-                type: 'exponential',
-                delay: 1000,
-              },
+                /*
+                 * Important:
+                 * use the outbox event ID as a unique
+                 * job identifier.
+                 */
+                jobId: event.id,
+              });
+              span.setStatus({
+                code: SpanStatusCode.OK,
+              });
+            } catch (error) {
+              span.recordException(error as Error);
 
-              /*
-               * Important:
-               * use the outbox event ID as a unique
-               * job identifier.
-               */
-              jobId: event.id,
-            });
+              span.setStatus({
+                code: SpanStatusCode.ERROR,
+              });
 
+              throw error;
+            } finally {
+              span.end();
+            }
             break;
           }
 

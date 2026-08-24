@@ -1,10 +1,35 @@
 import { Queue } from 'bullmq';
 import { redis } from './connection.js';
-import { Prisma } from '@prisma/client';
-export interface PaymentJob extends Prisma.JsonObject {
+
+export interface PaymentRequestedEvent {
+  type: 'payment.requested';
+
+  payload: {
+    orderId: string;
+    userId: string;
+    amountCents: number;
+    requestId: string;
+  };
+
+  traceContext: {
+    traceparent?: string;
+    tracestate?: string;
+  };
+}
+
+export type DomainEvent = PaymentRequestedEvent;
+
+export interface TraceContext {
+  traceparent?: string;
+  tracestate?: string;
+}
+
+export interface PaymentJob {
   orderId: string;
   userId: string;
   amountCents: number;
+  requestId: string;
+  traceContext?: TraceContext;
 }
 
 export const paymentQueue = new Queue<PaymentJob>('payments', {
