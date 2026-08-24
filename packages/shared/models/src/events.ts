@@ -7,6 +7,11 @@ export interface PaymentRequestedEvent {
     amountCents: number;
     requestId: string;
   };
+
+  traceContext: {
+    traceparent?: string;
+    tracestate?: string;
+  };
 }
 
 export type DomainEvent = PaymentRequestedEvent;
