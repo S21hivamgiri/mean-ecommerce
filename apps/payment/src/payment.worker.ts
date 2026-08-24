@@ -1,35 +1,75 @@
 import { Worker } from 'bullmq';
 
 import { createLogger } from '@myCommerce/logger';
+import { extractTraceContext } from '@myCommerce/observability';
 import { redis, type PaymentJob } from '@myCommerce/queue';
 const logger = createLogger('payment-worker');
+import {
+  context,
+  SpanStatusCode,
+  SpanKind,
+  trace,
+} from '@opentelemetry/api';
+const tracer = trace.getTracer('payment-worker');
 
 export const paymentWorker = new Worker<PaymentJob>(
   'payments',
 
   async (job) => {
-    const { orderId, amountCents, requestId } = job.data;
+  const parentContext = extractTraceContext(job.data.traceContext);
 
-    logger.info(
+    const span = tracer.startSpan(
+      'payment.process',
       {
-        requestId,
-        orderId,
-        amountCents,
-        jobId: job.id,
+        kind: SpanKind.CONSUMER,
       },
-      'Processing payment',
+      parentContext,
     );
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      const { orderId, amountCents, requestId } = job.data;
 
-    logger.info(
-      {
-        requestId,
-        orderId,
-        jobId: job.id,
-      },
-      'Payment completed',
-    );
+      await context.with(trace.setSpan(parentContext, span), async () => {
+        span.setAttributes({
+          'order.id': orderId,
+          'payment.amount_cents': amountCents,
+          'messaging.system': 'bullmq',
+          'messaging.operation.type': 'process',
+        });
+
+        logger.info(
+          {
+            requestId,
+            orderId,
+            amountCents,
+            jobId: job.id,
+          },
+          'Processing payment',
+        );
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      });
+      span.setStatus({
+        code: SpanStatusCode.OK,
+      });
+      logger.info(
+        {
+          requestId,
+          orderId,
+          jobId: job.id,
+        },
+        'Payment completed',
+      );
+    } catch (error) {
+      span.recordException(error as Error);
+
+      span.setStatus({
+        code: SpanStatusCode.ERROR,
+      });
+
+      throw error;
+    } finally {
+      span.end();
+    }
   },
 
   {

@@ -1,4 +1,3 @@
-// Telemetry Helper
 import { context, propagation, type Context } from '@opentelemetry/api';
 
 export interface TraceContext {
@@ -15,4 +14,22 @@ export function getTraceContext(): TraceContext {
     traceparent: carrier.traceparent,
     tracestate: carrier.tracestate,
   };
+}
+
+export function extractTraceContext(traceContext?: TraceContext): Context {
+  if (!traceContext) {
+    return context.active();
+  }
+
+  const carrier: Record<string, string> = {};
+
+  if (traceContext.traceparent) {
+    carrier.traceparent = traceContext.traceparent;
+  }
+
+  if (traceContext.tracestate) {
+    carrier.tracestate = traceContext.tracestate;
+  }
+
+  return propagation.extract(context.active(), carrier);
 }
