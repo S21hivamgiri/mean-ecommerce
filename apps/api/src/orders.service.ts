@@ -1,13 +1,21 @@
-import {Order} from "@myCommerce/models"
-import {  PaymentRequestedEvent } from '@myCommerce/queue';
+import { Order } from '@myCommerce/models';
+import { PaymentRequestedEvent } from '@myCommerce/queue';
 import { randomUUID } from 'crypto';
 import { OrdersRepository } from './orders.repository';
 import { InventoryClient } from './infrastructure/client/inventory.client';
 import { createLogger } from '@myCommerce/logger';
 import { trace } from '@opentelemetry/api';
 import { getTraceContext } from '@myCommerce/observability';
-const tracer = trace.getTracer('order-service');
+import { metrics } from '@opentelemetry/api';
 
+const tracer = trace.getTracer('order-service');
+const meter = metrics.getMeter('order-service');
+const ordersCreated = meter.createCounter('orders.created', {
+  description: 'Number of successfully created orders',
+});
+const ordersFailed = meter.createCounter('orders.failed', {
+  description: 'Number of failed order creations',
+});
 export class OrdersService {
   constructor(
     private readonly ordersRepository: OrdersRepository,
@@ -69,6 +77,7 @@ export class OrdersService {
       traceContext: getTraceContext(),
     };
 
+    ordersCreated.add(1);
     try {
       const orderResult = await this.ordersRepository.createWithEvent(
         order,
@@ -92,6 +101,7 @@ export class OrdersService {
       span.setStatus({
         code: 2,
       });
+      ordersFailed.add(1);
 
       throw error;
     } finally {

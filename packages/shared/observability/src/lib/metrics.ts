@@ -1,18 +1,13 @@
 import { metrics } from '@opentelemetry/api';
-
 import {
   MeterProvider,
   PeriodicExportingMetricReader,
 } from '@opentelemetry/sdk-metrics';
-
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
-
 import { resourceFromAttributes } from '@opentelemetry/resources';
-
 import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
 
 const serviceName = process.env.OTEL_SERVICE_NAME ?? 'order-api';
-
 const endpoint =
   process.env.OTEL_EXPORTER_OTLP_ENDPOINT ?? 'http://localhost:4318';
 
