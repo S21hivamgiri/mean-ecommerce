@@ -1,6 +1,7 @@
 import './instrumentation';
 import { OrdersRouter } from './orders.route';
 import { errorHandler } from './middleware/error-handler';
+import {metricsMiddleware} from './middleware/metrics.middleware';
 import express from 'express';
 import { createLogger } from '@myCommerce/logger';
 import pinoHttp from 'pino-http';
@@ -31,6 +32,7 @@ app.get('/', (_req, res) => {
   res.send('Order Server');
 });
 
+app.use(metricsMiddleware);
 // CORS configuration for React app
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
