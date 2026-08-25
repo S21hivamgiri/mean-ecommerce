@@ -21,6 +21,18 @@ services:
     volumes:
       - redis_data:/data
 
+  tempo:
+    image: grafana/tempo:latest
+    container_name: ecommerce-tempo
+    restart: unless-stopped
+    command:
+      - "-config.file=/etc/tempo.yaml"
+    volumes:
+      - ./observability/tempo.yaml:/etc/tempo.yaml
+      - tempo_data:/var/tempo
+    ports:
+      - "3200:3200"
+
   otel-collector:
     image: otel/opentelemetry-collector-contrib:latest
     container_name: ecommerce-otel-collector
@@ -31,20 +43,23 @@ services:
     ports:
       - "4317:4317"
       - "4318:4318"
+      - "8888:8888"
+      - "8889:8889"
+    restart: unless-stopped
     depends_on:
       - tempo
-  tempo:
-    image: grafana/tempo:latest
-    container_name: ecommerce-tempo
-    command:
-      - "-config.file=/etc/tempo.yaml"
-    volumes:
-      - ./observability/tempo.yaml:/etc/tempo.yaml
-      - tempo_data:/var/tempo
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: ecommerce-prometheus
+    restart: unless-stopped
     ports:
-      - "3200:3200"
-      - "4317:4317"
-      - "4318:4318"
+      - "9090:9090"
+    volumes:
+      - ./observability/prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - otel-collector
+
   grafana:
     image: grafana/grafana:latest
     container_name: ecommerce-grafana
@@ -55,6 +70,7 @@ services:
       - grafana_data:/var/lib/grafana
     depends_on:
       - tempo
+      - prometheus
 
 volumes:
   postgres_data:
