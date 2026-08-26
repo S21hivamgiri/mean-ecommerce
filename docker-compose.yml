@@ -72,6 +72,28 @@ services:
       - tempo
       - prometheus
 
+  loki:
+    image: grafana/loki:latest
+    container_name: ecommerce-loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+  alloy:
+    image: grafana/alloy:latest
+    container_name: ecommerce-alloy
+
+    ports:
+      - "12345:12345"
+
+    volumes:
+      - ./observability/alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - ./logs:/logs:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    command:
+      - run
+      - /etc/alloy/config.alloy
+      - --server.http.listen-addr=0.0.0.0:12345
+      
 volumes:
   postgres_data:
   redis_data:
