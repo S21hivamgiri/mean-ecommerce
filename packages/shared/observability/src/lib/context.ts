@@ -33,3 +33,11 @@ export function extractTraceContext(traceContext?: TraceContext): Context {
 
   return propagation.extract(context.active(), carrier);
 }
+
+export function injectTraceContext(): TraceContext {
+  const carrier: TraceContext = {};
+
+  propagation.inject(context.active(), carrier);
+
+  return carrier;
+}
