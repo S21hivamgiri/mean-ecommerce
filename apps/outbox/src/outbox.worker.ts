@@ -1,6 +1,19 @@
-import { paymentQueue, PaymentJobSchema } from '@myCommerce/queue';
+import {
+  SpanKind,
+  SpanStatusCode,
+  context,
+  propagation,
+  trace,
+} from '@opentelemetry/api';
+
+import {
+  paymentQueue,
+  PaymentJobSchema,
+  type PaymentJob,
+  type TraceContext,
+} from '@myCommerce/queue';
+
 import { OutboxRepository } from './outbox.repository';
-import { SpanStatusCode, SpanKind, trace } from '@opentelemetry/api';
 
 const tracer = trace.getTracer('outbox-worker');
 
@@ -8,47 +21,72 @@ export class OutboxWorker {
   constructor(private readonly repository: OutboxRepository) {}
 
   async process() {
-    const span = tracer.startSpan('payment.publish', {
-      kind: SpanKind.PRODUCER,
-    });
-
     const events = await this.repository.getUnprocessedEvents();
 
     for (const event of events) {
       try {
         switch (event.type) {
           case 'payment.requested': {
-            const payload = PaymentJobSchema.parse(event.payload);
+            const span = tracer.startSpan('payment.publish', {
+              kind: SpanKind.PRODUCER,
+            });
+
             try {
-              await paymentQueue.add('process-payment', payload, {
-                attempts: 3,
+              await context.with(
+                trace.setSpan(context.active(), span),
+                async () => {
+                  const traceContext: TraceContext = {};
 
-                backoff: {
-                  type: 'exponential',
-                  delay: 1000,
+                  propagation.inject(context.active(), traceContext);
+
+                  const payload: PaymentJob = PaymentJobSchema.parse(
+                    event.payload,
+                  );
+
+                  const job: PaymentJob = {
+                    ...payload,
+                    traceContext,
+                  };
+
+                  span.setAttributes({
+                    'messaging.system': 'bullmq',
+                    'messaging.operation.type': 'publish',
+                    'messaging.destination.name': 'payments',
+                    'messaging.message.id': event.id,
+                    'order.id': payload.orderId,
+                  });
+
+                  await paymentQueue.add('process-payment', job, {
+                    attempts: 3,
+
+                    backoff: {
+                      type: 'exponential',
+                      delay: 1000,
+                    },
+
+                    jobId: event.id,
+                  });
+
+                  span.setStatus({
+                    code: SpanStatusCode.OK,
+                  });
                 },
-
-                /*
-                 * Important:
-                 * use the outbox event ID as a unique
-                 * job identifier.
-                 */
-                jobId: event.id,
-              });
-              span.setStatus({
-                code: SpanStatusCode.OK,
-              });
+              );
             } catch (error) {
-              span.recordException(error as Error);
+              span.recordException(
+                error instanceof Error ? error : new Error(String(error)),
+              );
 
               span.setStatus({
                 code: SpanStatusCode.ERROR,
+                message: error instanceof Error ? error.message : String(error),
               });
 
               throw error;
             } finally {
               span.end();
             }
+
             break;
           }
 
