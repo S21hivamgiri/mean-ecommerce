@@ -6,10 +6,11 @@ import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
 
 const serviceName = process.env.OTEL_SERVICE_NAME || 'order-api';
 
+const endpoint =
+  process.env.OTEL_EXPORTER_OTLP_ENDPOINT ?? 'http://localhost:4318';
+
 const traceExporter = new OTLPTraceExporter({
-  url:
-    process.env.OTEL_EXPORTER_OTLP_ENDPOINT ||
-    'http://localhost:4318/v1/traces',
+  url: `${endpoint}/v1/traces`,
 });
 
 export const sdk = new NodeSDK({

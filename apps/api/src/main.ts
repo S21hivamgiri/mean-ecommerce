@@ -1,7 +1,7 @@
 import './instrumentation';
 import { OrdersRouter } from './orders.route';
 import { errorHandler } from './middleware/error-handler';
-import {metricsMiddleware} from './middleware/metrics.middleware';
+import { metricsMiddleware } from './middleware/metrics.middleware';
 import express from 'express';
 import { createLogger } from '@myCommerce/logger';
 import pinoHttp from 'pino-http';
@@ -21,7 +21,6 @@ app.use(
 );
 app.use(express.json());
 app.use(requestContext);
-
 app.get('/health', (_req, res) => {
   res.json({
     status: 'ok',
@@ -33,6 +32,30 @@ app.get('/', (_req, res) => {
 });
 
 app.use(metricsMiddleware);
+
+app.get('/test-error', (_req, res) => {
+  res.status(500).json({
+    error: 'Testing alert',
+  });
+});
+
+app.get('/test-log', (req, res) => {
+  logger.info(
+    {
+      event: 'test_log',
+      requestId: req.requestId,
+      message: 'Testing telemetry log correlation',
+    },
+    'Test log generated',
+  );
+
+  res.status(200).json({
+    ok: true,
+    message: 'Test log generated',
+    requestId: req.requestId,
+  });
+});
+
 // CORS configuration for React app
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
