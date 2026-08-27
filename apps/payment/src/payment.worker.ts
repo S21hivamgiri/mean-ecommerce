@@ -8,11 +8,13 @@ import {
   paymentJobsFailed,
   paymentJobsProcessed,
 } from '@myCommerce/observability';
-import { redis, type PaymentJob } from '@myCommerce/queue';
+import { redis, type PaymentJob, paymentQueue, } from '@myCommerce/queue';
+import { registerPaymentQueueMetrics } from '@myCommerce/observability';
 
 const logger = createLogger('payment-worker');
-
 const tracer = trace.getTracer('payment-worker');
+
+registerPaymentQueueMetrics(paymentQueue);
 
 export const paymentWorker = new Worker<PaymentJob>(
   'payments',
