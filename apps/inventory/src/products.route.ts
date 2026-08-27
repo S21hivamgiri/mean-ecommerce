@@ -1,13 +1,7 @@
 import { Router } from 'express';
 import { ProductsService } from './products.service';
 import { ProductsRepository } from './products.repository';
-import { ProductsController } from './products.controller';
-// import {
-//   ApiResponse,
-//   Product,
-//   ProductFilter,
-//   PaginatedResponse,
-// } from '@myCommerce/models';
+import { ProductsController } from './products.controller'
 import { prisma } from './infrastructure/db/prisma';
 
 const router = Router();

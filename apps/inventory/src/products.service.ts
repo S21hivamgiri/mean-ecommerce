@@ -1,67 +1,37 @@
 // eslint-disable-next-line
-import { Product } from '@myCommerce/models';
+import { Product, PaginatedResponse } from '@myCommerce/models';
 import { ProductsRepository } from './products.repository';
 import { randomUUID } from 'crypto';
 
 export class ProductsService {
   constructor(private readonly productsRepository: ProductsRepository) {}
 
-  // getProducts(filter?: ProductFilter, page = 1, pageSize = 10) {
-  //   let filteredProducts = [...this.products];
+  async getPaginatedProducts(
+    pageQuery?: string,
+    limit?: string,
+  ): Promise<PaginatedResponse<Product>> {
+    const currentPageNumber = Math.max(1, parseInt(pageQuery || '1', 10));
+    const pageSize = Math.min(
+      100,
+      Math.max(1, parseInt(limit || '10', 10)),
+    );
 
-  //   // Apply filters
-  //   if (filter) {
-  //     if (filter.category) {
-  //       filteredProducts = filteredProducts.filter(
-  //         (p) => p.category === filter.category,
-  //       );
-  //     }
-  //     if (filter.minPrice !== undefined) {
-  //       const minPrice = filter.minPrice;
-  //       filteredProducts = filteredProducts.filter((p) => p.price >= minPrice);
-  //     }
-  //     if (filter.maxPrice !== undefined) {
-  //       const maxPrice = filter.maxPrice;
-  //       filteredProducts = filteredProducts.filter((p) => p.price <= maxPrice);
-  //     }
-  //     if (filter.inStock !== undefined) {
-  //       filteredProducts = filteredProducts.filter(
-  //         (p) => p.inStock === filter.inStock,
-  //       );
-  //     }
-  //     if (filter.searchTerm) {
-  //       const searchLower = filter.searchTerm.toLowerCase();
-  //       filteredProducts = filteredProducts.filter(
-  //         (p) =>
-  //           p.name.toLowerCase().includes(searchLower) ||
-  //           p.description?.toLowerCase().includes(searchLower) ||
-  //           p.category.toLowerCase().includes(searchLower),
-  //       );
-  //     }
-  //   }
+    const { items, total } = await this.productsRepository.findPaginated(
+      currentPageNumber,
+      pageSize,
+    );
 
-  //   // Calculate pagination
-  //   const total = filteredProducts.length;
-  //   const totalPages = Math.ceil(total / pageSize);
-  //   const startIndex = (page - 1) * pageSize;
-  //   const endIndex = startIndex + pageSize;
-  //   const items = filteredProducts.slice(startIndex, endIndex);
-
-  //   return {
-  //     items,
-  //     total,
-  //     page,
-  //     pageSize,
-  //     totalPages,
-  //   };
-  // }
+    return {
+      items,
+      total,
+      pageSize,
+      page: currentPageNumber,
+      totalPages: Math.ceil(total / pageSize),
+    };
+  }
 
   async getCategories(): Promise<string[]> {
     return this.productsRepository.findCategories();
-  }
-
-  async getProducts(): Promise<Product[]> {
-    return this.productsRepository.findAll();
   }
 
   async getProduct(id: string): Promise<Product | undefined> {

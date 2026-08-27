@@ -21,7 +21,7 @@ export class ProductsRepository {
         createdAt: 'asc',
       },
     });
-    return categories.map(data => data.category);
+    return categories.map((data) => data.category);
   }
 
   async findById(id: string): Promise<Product | undefined> {
@@ -34,14 +34,25 @@ export class ProductsRepository {
     return product ? this.mapProduct(product) : undefined;
   }
 
-  async findAll(): Promise<Product[]> {
-    const products = await this.prisma.product.findMany({
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
+  async findPaginated(
+    page: number,
+    limit: number,
+  ): Promise<{
+    items: Product[];
+    total: number;
+  }> {
+    const skip = (page - 1) * limit;
 
-    return products.map(this.mapProduct);
+    const [items, total] = await Promise.all([
+      this.prisma.product.findMany({
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.product.count(),
+    ]);
+
+    return { items: items.map(this.mapProduct), total };
   }
 
   async create(product: Product): Promise<Product> {

@@ -5,10 +5,19 @@ import { createProductSchema } from './products.types';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
-  allProducts = async (req: Request, res: Response) => {
-    const products = await this.productsService.getProducts();
+  allProducts = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const page = req.query.page as string;
+      const limit = req.query.limit as string;
 
-    res.json(products);
+      const result = await this.productsService.getPaginatedProducts(
+        page,
+        limit,
+      );
+      res.status(200).json(result);
+    } catch (error) {
+      res.status(500).json({ message: 'Error retrieving products', error });
+    }
   };
 
   getCategories = async (req: Request, res: Response) => {
@@ -43,8 +52,7 @@ export class ProductsController {
       return;
     }
 
-    const { name, price, description, category, imageUrl } =
-      result.data;
+    const { name, price, description, category, imageUrl } = result.data;
     const order = await this.productsService.createProduct(
       name,
       price,
