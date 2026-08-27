@@ -1,24 +1,23 @@
 // eslint-disable-next-line
-import { Product, PaginatedResponse } from '@myCommerce/models';
+import { Product, PaginatedResponse, ProductFilter } from '@myCommerce/models';
 import { ProductsRepository } from './products.repository';
 import { randomUUID } from 'crypto';
 
 export class ProductsService {
   constructor(private readonly productsRepository: ProductsRepository) {}
 
-  async getPaginatedProducts(
-    pageQuery?: string,
-    limit?: string,
+  async getProducts(
+    pageQuery?: string | number,
+    pageSizeQuery?: string | number,
+    filter?: ProductFilter,
   ): Promise<PaginatedResponse<Product>> {
-    const currentPageNumber = Math.max(1, parseInt(pageQuery || '1', 10));
-    const pageSize = Math.min(
-      100,
-      Math.max(1, parseInt(limit || '10', 10)),
-    );
+    const currentPageNumber = Math.max(1, Number(pageQuery) || 1);
+    const pageSize = Math.min(100, Math.max(1, Number(pageSizeQuery) || 10));
 
     const { items, total } = await this.productsRepository.findPaginated(
       currentPageNumber,
       pageSize,
+      filter,
     );
 
     return {

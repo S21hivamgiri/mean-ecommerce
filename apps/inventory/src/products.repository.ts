@@ -1,5 +1,5 @@
-import type { Product } from '@myCommerce/models';
-import { PrismaClient } from '@prisma/client';
+import type { Product, ProductFilter } from '@myCommerce/models';
+import { PrismaClient, Prisma } from '@prisma/client';
 
 export class ProductsRepository {
   constructor(private readonly prisma: PrismaClient) {}
@@ -36,20 +36,49 @@ export class ProductsRepository {
 
   async findPaginated(
     page: number,
-    limit: number,
+    pageSize: number,
+    filter: ProductFilter = {},
   ): Promise<{
     items: Product[];
     total: number;
   }> {
-    const skip = (page - 1) * limit;
+    const skip = (page - 1) * pageSize;
 
+    // Dynamically build Prisma's where clause
+    const where: Prisma.ProductWhereInput = {};
+
+    if (filter.category) {
+      where.category = { equals: filter.category, mode: 'insensitive' };
+    }
+
+    if (filter.minPrice !== undefined || filter.maxPrice !== undefined) {
+      where.price = {
+        gte: filter.minPrice,
+        lte: filter.maxPrice,
+      };
+    }
+
+    if (filter.inStock !== undefined) {
+      where.inStock = filter.inStock;
+    }
+
+    if (filter.searchTerm) {
+      where.OR = [
+        { name: { contains: filter.searchTerm, mode: 'insensitive' } },
+        { description: { contains: filter.searchTerm, mode: 'insensitive' } },
+        { category: { contains: filter.searchTerm, mode: 'insensitive' } },
+      ];
+    }
+
+    // Single query execution for both filtered count and filtered dataset
     const [items, total] = await Promise.all([
       this.prisma.product.findMany({
+        where,
         skip,
-        take: limit,
+        take: pageSize,
         orderBy: { createdAt: 'desc' },
       }),
-      this.prisma.product.count(),
+      this.prisma.product.count({ where }),
     ]);
 
     return { items: items.map(this.mapProduct), total };
