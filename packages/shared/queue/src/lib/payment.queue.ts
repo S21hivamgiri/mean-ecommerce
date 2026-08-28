@@ -6,7 +6,6 @@ export interface PaymentRequestedEvent {
 
   payload: {
     orderId: string;
-    userId: string;
     amountCents: number;
     requestId: string;
   };
@@ -26,7 +25,6 @@ export interface TraceContext {
 
 export interface PaymentJob {
   orderId: string;
-  userId: string;
   amountCents: number;
   requestId: string;
   traceContext?: TraceContext;

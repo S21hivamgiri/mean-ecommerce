@@ -38,7 +38,6 @@ export class OrdersRepository {
       const createdOrder = await tx.order.create({
         data: {
           id: order.id,
-          userId: order.userId,
           productId: order.productId,
           quantity: order.quantity,
           totalCents: order.totalCents,

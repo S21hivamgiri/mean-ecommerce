@@ -34,7 +34,6 @@ export class OrdersService {
 
   async createOrder(
     productId: string,
-    userId: string,
     totalCents: number,
     quantity: number,
     requestId: string,
@@ -47,7 +46,6 @@ export class OrdersService {
     await this.inventoryClient.reserve(productId, quantity, requestId);
     const order: Order = {
       id: randomUUID(),
-      userId,
       totalCents,
       productId,
       quantity,
@@ -57,7 +55,6 @@ export class OrdersService {
     this.logger.info(
       {
         orderId: order.id,
-        userId,
         productId,
         quantity,
         totalCents,
@@ -70,7 +67,6 @@ export class OrdersService {
 
       payload: {
         orderId: order.id,
-        userId: order.userId,
         amountCents: order.totalCents,
         requestId,
       },

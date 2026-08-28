@@ -21,7 +21,6 @@ model OutboxEvent {
 
 model Order {
   id         String   @id @default(uuid())
-  userId     String
   productId  String
   totalCents Int
   quantity   Int      @default(0)
@@ -31,7 +30,6 @@ model Order {
   product    Product  @relation(fields: [productId], references: [id])
 
   @@index([productId])
-  @@index([userId])
   @@index([status])
 }
 

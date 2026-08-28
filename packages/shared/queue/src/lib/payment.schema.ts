@@ -7,7 +7,6 @@ export const TraceContextSchema = z.object({
 
 export const PaymentJobSchema = z.object({
   orderId: z.string(),
-  userId: z.string(),
   amountCents: z.number(),
   requestId: z.string(),
   traceContext: TraceContextSchema.optional(),
